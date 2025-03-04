@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         IMAGE_NAME = 'momer99/mlops-a1'
-        DOCKER_TAG = "${env.BUILD_NUMBER}" // Use Jenkins build number as a tag
+        DOCKER_TAG = "${env.BUILD_NUMBER}"
     }
 
     stages {
@@ -17,7 +17,7 @@ pipeline {
             steps {
                 script {
                     try {
-                        sh "docker build -t $IMAGE_NAME:$DOCKER_TAG ."
+                        bat "docker build -t %IMAGE_NAME%:%DOCKER_TAG% ."
                     } catch (Exception e) {
                         error "Docker build failed: ${e.message}"
                     }
@@ -30,9 +30,9 @@ pipeline {
                 script {
                     withDockerRegistry([credentialsId: 'docker-hub-credentials', url: '']) {
                         try {
-                            sh "docker push $IMAGE_NAME:$DOCKER_TAG"
-                            sh "docker tag $IMAGE_NAME:$DOCKER_TAG $IMAGE_NAME:latest"
-                            sh "docker push $IMAGE_NAME:latest"
+                            bat "docker push %IMAGE_NAME%:%DOCKER_TAG%"
+                            bat "docker tag %IMAGE_NAME%:%DOCKER_TAG% %IMAGE_NAME%:latest"
+                            bat "docker push %IMAGE_NAME%:latest"
                         } catch (Exception e) {
                             error "Docker push failed: ${e.message}"
                         }
