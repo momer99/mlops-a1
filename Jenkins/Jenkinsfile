@@ -1,0 +1,39 @@
+pipeline {
+    agent any
+
+    environment {
+        IMAGE_NAME = 'momer99/mlops-a1'
+    }
+
+    stages {
+        stage('Clone Repository') {
+            steps {
+                git 'https://github.com/your-repo/ml-project.git'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t $IMAGE_NAME .'
+            }
+        }
+
+        stage('Push to Docker Hub') {
+            steps {
+                withDockerRegistry([credentialsId: 'docker-hub-credentials', url: '']) {
+                    sh 'docker push $IMAGE_NAME'
+                }
+            }
+        }
+    }
+}
+
+post {
+    success {
+        emailext (
+            subject: "Deployment Successful",
+            body: "The latest version has been successfully deployed.",
+            recipientProviders: [developers()]
+        )
+    }
+}
