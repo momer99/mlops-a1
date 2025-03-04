@@ -26,14 +26,14 @@ pipeline {
             }
         }
     }
-}
-
-post {
-    success {
-        emailext (
-            subject: "Deployment Successful",
-            body: "The latest version has been successfully deployed.",
-            recipientProviders: [developers()]
-        )
+    
+    post {
+        success {
+            emailext (
+                subject: "Deployment Successful",
+                body: "The latest version has been successfully deployed.",
+                recipientProviders: [developers()]
+            )
+        }
     }
 }
