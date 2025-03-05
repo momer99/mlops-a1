@@ -16,11 +16,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    try {
-                        bat "docker build -t %IMAGE_NAME%:%DOCKER_TAG% -f Docker/Dockerfile ."
-                    } catch (Exception e) {
-                        error "Docker build failed: ${e.message}"
-                    }
+                    bat "docker build -t %IMAGE_NAME%:%DOCKER_TAG% -f Docker/Dockerfile ."
                 }
             }
         }
@@ -28,32 +24,27 @@ pipeline {
         stage('Push to Docker Hub') {
             steps {
                 script {
-                    withDockerRegistry([credentialsId: 'docker-hub-credentials', url: '']) {
-                        try {
-                            bat "docker push %IMAGE_NAME%:%DOCKER_TAG%"
-                            bat "docker tag %IMAGE_NAME%:%DOCKER_TAG% %IMAGE_NAME%:latest"
-                            bat "docker push %IMAGE_NAME%:latest"
-                        } catch (Exception e) {
-                            error "Docker push failed: ${e.message}"
-                        }
+                    withCredentials([string(credentialsId: 'DOCKER_PASSWORD', variable: 'DOCKER_PASSWORD')]) {
+                        bat "docker login -u momer99 -p %DOCKER_PASSWORD%"
+                        bat "docker push %IMAGE_NAME%:%DOCKER_TAG%"
                     }
                 }
             }
         }
     }
-    
+
     post {
         success {
             emailext (
                 subject: "Deployment Successful",
-                body: "The latest version ($DOCKER_TAG) has been successfully deployed.",
+                body: "The latest version (%DOCKER_TAG%) has been successfully deployed.",
                 recipientProviders: [developers()]
             )
         }
         failure {
             emailext (
                 subject: "Deployment Failed",
-                body: "The deployment of version ($DOCKER_TAG) failed. Check Jenkins logs for details.",
+                body: "The deployment of version (%DOCKER_TAG%) failed. Check Jenkins logs for details.",
                 recipientProviders: [developers()]
             )
         }
