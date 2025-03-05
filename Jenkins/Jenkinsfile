@@ -38,14 +38,14 @@ pipeline {
             emailext (
                 subject: "Deployment Successful",
                 body: "The latest version (%DOCKER_TAG%) has been successfully deployed.",
-                recipientProviders: [developers()]
+                to: 'ma359192002@gmail.com'
             )
         }
         failure {
             emailext (
                 subject: "Deployment Failed",
                 body: "The deployment of version (%DOCKER_TAG%) failed. Check Jenkins logs for details.",
-                recipientProviders: [developers()]
+                to: 'ma359192002@gmail.com'
             )
         }
     }
