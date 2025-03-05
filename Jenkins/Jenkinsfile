@@ -36,13 +36,13 @@ pipeline {
     post {
         success {
             mail to: 'ma359192002@gmail.com',
-            subject: "Deployment Successful",
-            body: "The latest version (%DOCKER_TAG%) has been successfully deployed.",
+                subject: "Deployment Successful",
+                body: "The latest version (${DOCKER_TAG}) has been successfully deployed."
         }
         failure {
             mail to: 'ma359192002@gmail.com',
-            subject: "Deployment Failed",
-            body: "The deployment of version (%DOCKER_TAG%) failed. Check Jenkins logs for details.",
+                subject: "Deployment Failed",
+                body: "The deployment of version (${DOCKER_TAG}) failed. Check Jenkins logs for details."
         }
     }
 }
