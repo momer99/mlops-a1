@@ -17,7 +17,7 @@ pipeline {
             steps {
                 script {
                     try {
-                        bat "docker build -t %IMAGE_NAME%:%DOCKER_TAG% -f docker/Dockerfile ."
+                        bat "docker build -t %IMAGE_NAME%:%DOCKER_TAG% -f Docker/Dockerfile ."
                     } catch (Exception e) {
                         error "Docker build failed: ${e.message}"
                     }

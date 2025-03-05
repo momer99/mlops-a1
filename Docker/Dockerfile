@@ -4,11 +4,14 @@ FROM python:3.9
 # Set the working directory in the container
 WORKDIR /app
 
-# Copy the current directory contents into the container
-COPY . .
+# Copy requirements.txt from the parent directory
+COPY ../src/requirements.txt /app/
 
-# Install any dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Install dependencies
+RUN pip install --no-cache-dir -r /app/requirements.txt
+
+# Copy the rest of the application files from the Docker directory
+COPY ../src /app
 
 # Expose the port the app runs on
 EXPOSE 5000
