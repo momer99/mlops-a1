@@ -8,7 +8,7 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.pipeline import Pipeline
 
 # Load dataset (IMDB reviews)
-df = pd.read_csv("https://raw.githubusercontent.com/laxmimerit/IMDB-Movie-Reviews-Large-Dataset-50k/master/train.csv")
+df = pd.read_csv(r"dataset/IMDB.csv")
 
 # Preprocessing function
 def clean_text(text):
