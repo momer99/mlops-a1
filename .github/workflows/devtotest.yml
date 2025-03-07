@@ -26,11 +26,13 @@ jobs:
           git fetch origin test
           git checkout test
           git pull origin test  # Ensure test is up to date
-          if git diff --quiet HEAD origin/dev; then
-            echo "No new changes to merge from dev to test."
-            exit 0
-          fi
-          git merge --no-ff origin/dev -m "$(git log -1 --pretty=%B)"
+          
+          git merge --no-ff origin/dev -m "Auto-merged dev into test: $(git log -1 --pretty=%B)" || {
+            echo "Merge conflict detected! Aborting merge."
+            git merge --abort
+            exit 1
+          }
+
           git push origin test
         env:
           GITHUB_TOKEN: ${{ secrets.AUTOMERGE }}
