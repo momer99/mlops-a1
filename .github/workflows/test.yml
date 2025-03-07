@@ -2,11 +2,9 @@ name: Feature Testing
 
 on:
   workflow_run:
-    workflows: ["Merge Dev to Test"]
+    workflows: ["Merge Dev to Test"]  # This triggers when "Merge Dev to Test" workflow is completed
     types:
-      - completed
-    branches:
-      - test  # Only trigger for workflows that complete on the 'test' branch
+      - completed  # Trigger only when the workflow is completed
 
 jobs:
   test:
@@ -15,7 +13,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          ref: refs/heads/test  # Ensure we always checkout the 'test' branch
+          ref: refs/heads/test  # Explicitly checks out the 'test' branch for the testing process
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -25,7 +23,7 @@ jobs:
       - name: Set up virtual environment
         run: |
           python -m venv venv
-          source venv/bin/activate  # Activate virtual environment
+          source venv/bin/activate  # Activate the virtual environment
 
       - name: Install dependencies
         run: |
