@@ -21,4 +21,27 @@ jobs:
         run: pip install -r src/requirements.txt
 
       - name: Run tests
-        run: pytest src/tests/test_app.py
+name: Feature Testing
+
+on:
+   workflow_run:
+    workflows: ["Merge Dev to Test"]
+    types:
+      - completed
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: pip install -r src/requirements.txt
+
+      - name: Run tests
+        run: pytest src/test_app.py
