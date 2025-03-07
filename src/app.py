@@ -11,7 +11,7 @@ model = joblib.load("src/sentiment_model.pkl")
 def home():
     return jsonify({"message": "Sentiment Analysis API is running"})
 
- 
+
 @app.route("/predict", methods=["POST"])
 def predict():
     data = request.json  # Expecting JSON input
