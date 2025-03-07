@@ -1,4 +1,4 @@
-name: Merge Test to master
+name: Merge Test to Master
 
 on:
   workflow_run:
@@ -21,12 +21,8 @@ jobs:
           git config user.name "momer99"
           git config user.email "muhamad01aamir@gmail.com"
 
-      - name: Merge Test into master
+      - name: Merge Test into Master
         run: |
-          git fetch origin master
-          git checkout master
-          git pull origin master  # Ensure master is up to date
-          git merge --no-ff origin/test -m "Auto-merging test into master"
-          git push origin master
+          gh pr merge $(gh pr list --base master --head test --json number --jq '.[0].number') --squash --admin
         env:
           GITHUB_TOKEN: ${{ secrets.AUTOMERGE }}
