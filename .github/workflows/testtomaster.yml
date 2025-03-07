@@ -2,7 +2,7 @@ name: Merge Test to master
 
 on:
   workflow_run:
-    workflows: ["Code Quality Check"]
+    workflows: ["Feature Testing"]
     types:
       - completed
 
