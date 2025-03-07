@@ -1,10 +1,10 @@
 name: Feature Testing
 
 on:
-  push:
-    branches:
-      - test
-
+   workflow_run:
+    workflows: ["Merge Dev to Test"]
+    types:
+      - completed
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -21,4 +21,4 @@ jobs:
         run: pip install -r src/requirements.txt
 
       - name: Run tests
-        run: pytest src/tests/test_app.py
+        run: pytest src/test_app.py
