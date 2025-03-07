@@ -7,7 +7,7 @@ on:
       - completed
 
 jobs:
-  create_and_merge_pr:
+  create-pr:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -26,10 +26,14 @@ jobs:
           body: "This PR merges the latest changes from `dev` into `test`."
           labels: "automated-pr"
 
-      - name: Merge Pull Request
-        if: ${{ steps.create_pr.outputs.pull-request-number }}
-        uses: peter-evans/pull-request-merge@v3
+  auto-merge:
+    needs: create-pr
+    runs-on: ubuntu-latest
+    if: ${{ needs.create-pr.result == 'success' && needs.create-pr.outputs.pull-request-number != '' }}
+    steps:
+      - name: Enable Auto-Merge
+        uses: peter-evans/enable-pull-request-automerge@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          pull-request-number: ${{ steps.create_pr.outputs.pull-request-number }}
+          pull-request-number: ${{ needs.create_and_merge_pr.outputs.pull-request-number }}
           merge-method: squash
