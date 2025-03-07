@@ -1,0 +1,31 @@
+name: Merge Dev to Test
+
+on:
+  workflow_run:
+    workflows: ["Code Quality Check"]
+    types:
+      - completed
+
+jobs:
+  merge:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          ref: dev
+
+      - name: Configure Git
+        run: |
+          git config user.name "momer99"
+          git config user.email "muhamad01aamir@gmail.com"
+
+      - name: Merge Dev into Test
+        run: |
+          git fetch origin
+          git checkout test
+          git merge --no-ff dev
+          git push origin test
+        env:
+          GITHUB_TOKEN: ${{ secrets.AUTOMERGE }}
