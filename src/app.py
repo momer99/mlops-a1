@@ -9,7 +9,7 @@ model = joblib.load("src/sentiment_model.pkl")
 
 @app.route("/", methods=["GET"])
 def home():
-    return jsonify({"message": "Sentiment Analysis API is running -_-"})
+    return jsonify({"message": "Sentiment Analysis API is running -||-"})
 
 
 @app.route("/predict", methods=["POST"])
