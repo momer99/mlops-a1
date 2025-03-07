@@ -1,4 +1,4 @@
-name: Create and Merge PR from Dev to Test
+name: Merge Dev to Test
 
 on:
   workflow_run:
@@ -7,7 +7,8 @@ on:
       - completed
 
 jobs:
-  create-pr:
+  merge:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -15,25 +16,21 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Create Pull Request
-        id: create_pr
-        uses: peter-evans/create-pull-request@v5
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          base: test
-          branch: dev
-          title: "Auto PR: Merge Dev into Test"
-          body: "This PR merges the latest changes from `dev` into `test`."
-          labels: "automated-pr"
+      - name: Configure Git
+        run: |
+          git config user.name "momer99"
+          git config user.email "muhamad01aamir@gmail.com"
 
-  auto-merge:
-    needs: create-pr
-    runs-on: ubuntu-latest
-    if: ${{ needs.create-pr.result == 'success' }}
-    steps:
-      - name: Enable Auto-Merge
-        uses: peter-evans/enable-pull-request-automerge@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          pull-request-number: ${{ needs.create-pr.outputs.pull-request-number }}
-          merge-method: squash
+      - name: Merge Dev into Test
+        run: |
+          git fetch origin test
+          git checkout test
+          git pull origin test  # Ensure test is up to date
+          if git diff --quiet HEAD origin/dev; then
+            echo "No new changes to merge from dev to test."
+            exit 0
+          fi
+          git merge --no-ff origin/dev -m "$(git log -1 --pretty=%B)"
+          git push origin test
+        env:
+          GITHUB_TOKEN: ${{ secrets.AUTOMERGE }}

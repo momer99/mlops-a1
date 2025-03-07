@@ -23,6 +23,14 @@ jobs:
 
       - name: Merge Test into Master
         run: |
-          gh pr merge $(gh pr list --base master --head test --json number --jq '.[0].number') --squash --admin
+          git fetch origin master
+          git checkout master
+          git pull origin master  # Ensure master is up to date
+          if git diff --quiet HEAD origin/test; then
+            echo "No new changes to merge from test to master."
+            exit 0
+          fi
+          git merge --no-ff origin/test -m "$(git log -1 --pretty=%B)"
+          git push origin master
         env:
           GITHUB_TOKEN: ${{ secrets.AUTOMERGE }}

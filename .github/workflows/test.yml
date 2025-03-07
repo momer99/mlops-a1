@@ -1,7 +1,7 @@
 name: Feature Testing
 
 on:
-  pull_request:
+  push:
     branches:
       - test
 
@@ -22,15 +22,3 @@ jobs:
 
       - name: Run tests
         run: pytest
-
-  auto-merge:
-    needs: test
-    runs-on: ubuntu-latest
-    if: ${{ needs.test.result == 'success' }}
-    steps:
-      - name: Enable Auto-Merge
-        uses: peter-evans/enable-pull-request-automerge@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          pull-request-number: ${{ github.event.pull_request.number || github.event.workflow_run.pull_requests[0].number }}
-          merge-method: squash
