@@ -14,7 +14,7 @@ def test_home(client):
     """Test the home route."""
     response = client.get("/")
     assert response.status_code == 200
-    assert b"Sentiment Analysis API is running!" in response.data
+    assert b"Sentiment Analysis API is running!!!--" in response.data
 
 
 def test_predict_positive(client):
