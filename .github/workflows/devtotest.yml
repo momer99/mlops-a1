@@ -8,19 +8,14 @@ on:
 
 jobs:
   create_pull_request:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
-    outputs:
-      pr_number: ${{ steps.create_pr.outputs.pull-request-number }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-          ref: dev
 
       - name: Create Pull Request
-        id: create_pr
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -29,19 +24,3 @@ jobs:
           title: "Auto PR: Merge Dev into Test"
           body: "This PR merges the latest changes from `dev` into `test`."
           labels: "automated-pr"
-
-      - name: Debug PR Existence
-        run: gh pr list --base test --json number,title,state
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  auto_merge:
-    needs: create_pull_request
-    runs-on: ubuntu-latest
-    steps:
-      - name: Enable Auto-Merge
-        uses: peter-evans/enable-pull-request-automerge@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          pull-request-number: ${{ needs.create_pull_request.outputs.pr_number }}
-          merge-method: squash
