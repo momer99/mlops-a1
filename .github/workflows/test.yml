@@ -13,7 +13,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          ref: refs/heads/test  # Explicitly checks out the 'test' branch for the testing process
+          ref: test
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python
         uses: actions/setup-python@v4
