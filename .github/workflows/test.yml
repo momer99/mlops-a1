@@ -5,6 +5,7 @@ on:
     workflows: ["Merge Dev to Test"]
     types:
       - completed
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -17,8 +18,23 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Set up virtual environment
+        run: |
+          python -m venv venv
+          source venv/bin/activate  # Activate virtual environment
+
       - name: Install dependencies
-        run: pip install -r src/requirements.txt
+        run: |
+          source venv/bin/activate  # Ensure we're using the virtual environment
+          pip install --upgrade pip  # Upgrade pip to ensure compatibility
+          pip install -r src/requirements.txt  # Install dependencies from the requirements file
+
+      - name: Freeze installed packages
+        run: |
+          source venv/bin/activate  # Ensure we're using the virtual environment
+          pip freeze > src/requirements.txt  # Generate a new requirements.txt with only used dependencies
 
       - name: Run tests
-        run: pytest src/test_app.py
+        run: |
+          source venv/bin/activate  # Ensure we're using the virtual environment
+          pytest src/test_app.py  # Run your tests
