@@ -14,9 +14,9 @@ df = pd.read_csv(r"dataset/IMDB.csv")
 # Preprocessing function
 def clean_text(text):
     """Clean text by removing numbers, punctuation, and converting to lowercase."""
-    text = text.lower()  # Lowercase
-    text = re.sub(r'\d+', '', text)  # Remove numbers
-    text = text.translate(str.maketrans("", "", string.punctuation))  # Remove punctuation
+    text = text.lower()
+    text = re.sub(r'\d+', '', text)
+    text = text.translate(str.maketrans("", "", string.punctuation))
     return text
 
 
