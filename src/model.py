@@ -13,10 +13,10 @@ df = pd.read_csv(r"dataset/IMDB.csv")
 
 # Preprocessing function
 def clean_text(text):
-    """Clean text by removing numbers, punctuation, and converting to lowercase."""
-    text = text.lower()  # Lowercase
-    text = re.sub(r'\d+', '', text)  # Remove numbers
-    text = text.translate(str.maketrans("", "", string.punctuation))  # Remove punctuation
+    """Cleaning text (numbers, punctuation, and lowercase)"""
+    text = text.lower()
+    text = re.sub(r'\d+', '', text)
+    text = text.translate(str.maketrans("", "", string.punctuation))
     return text
 
 
@@ -47,4 +47,4 @@ model.fit(X_train, y_train)
 # Save model
 joblib.dump(model, "src/sentiment_model.pkl")
 
-print("Model saved successfully!!!")
+print("Model saved successfully!")
