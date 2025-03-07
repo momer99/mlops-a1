@@ -1,9 +1,13 @@
-name: Code Quality Check
+name: Code Quality Check and Auto Merge
 
 on:
   pull_request:
     branches:
       - dev
+
+permissions:
+  contents: write
+  pull-requests: write
 
 jobs:
   lint:
@@ -22,3 +26,15 @@ jobs:
 
       - name: Run Flake8
         run: flake8 .
+
+  auto-merge:
+    needs: lint  # Runs only if linting succeeds
+    runs-on: ubuntu-latest
+    steps:
+      - name: Auto-Merge Pull Request
+        uses: pascalgn/automerge-action@v0.15.5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          mergeMethod: squash
+          pullRequest: auto
