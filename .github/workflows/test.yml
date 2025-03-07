@@ -23,10 +23,10 @@ jobs:
       - name: Run tests
         run: pytest
 
-    auto-merge:
+  auto-merge:
     needs: test
     runs-on: ubuntu-latest
-    if: success()
+    if: ${{ needs.test.result == 'success' }}
     steps:
       - name: Enable Auto-Merge
         uses: peter-evans/enable-pull-request-automerge@v3
