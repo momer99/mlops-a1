@@ -6,6 +6,9 @@ on:
     types:
       - completed
 
+permissions:
+  contents: write
+
 jobs:
   merge:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
@@ -23,16 +26,10 @@ jobs:
 
       - name: Merge Dev into Test
         run: |
-          git fetch origin test
+          git fetch origin dev test
           git checkout test
-          git pull origin test  # Ensure test is up to date
-          
-          git merge --no-ff origin/dev -m "Auto-merged dev into test: $(git log -1 --pretty=%B)" || {
-            echo "Merge conflict detected! Aborting merge."
-            git merge --abort
-            exit 1
-          }
-
+          git pull origin test
+          git merge -X theirs origin/dev -m "Merging dev into test, preferring dev changes"
           git push origin test
         env:
-          GITHUB_TOKEN: ${{ secrets.AUTOMERGE }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
