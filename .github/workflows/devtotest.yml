@@ -14,7 +14,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          ref: dev
+          fetch-depth: 0
 
       - name: Configure Git
         run: |
@@ -23,9 +23,10 @@ jobs:
 
       - name: Merge Dev into Test
         run: |
-          git fetch origin
+          git fetch origin test
           git checkout test
-          git merge --no-ff dev
+          git pull origin test  # Ensure test is up to date
+          git merge --no-ff origin/dev -m "Auto-merging dev into test"
           git push origin test
         env:
           GITHUB_TOKEN: ${{ secrets.AUTOMERGE }}
