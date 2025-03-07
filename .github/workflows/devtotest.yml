@@ -2,7 +2,7 @@ name: Merge Dev to Test
 
 on:
   workflow_run:
-    workflows: ["Code Quality Check and Auto Merge"]
+    workflows: ["Code Quality Check"]
     types:
       - completed
 
