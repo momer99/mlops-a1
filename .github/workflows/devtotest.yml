@@ -1,4 +1,4 @@
-name: Merge Dev to Test
+name: Create Pull Request from Dev to Test
 
 on:
   workflow_run:
@@ -7,7 +7,7 @@ on:
       - completed
 
 jobs:
-  merge:
+  create_pull_request:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
@@ -16,17 +16,12 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Configure Git
-        run: |
-          git config user.name "momer99"
-          git config user.email "muhamad01aamir@gmail.com"
-
-      - name: Merge Dev into Test
-        run: |
-          git fetch origin test
-          git checkout test
-          git pull origin test  # Ensure test is up to date
-          git merge --no-ff origin/dev -m "Auto-merging dev into test"
-          git push origin test
-        env:
-          GITHUB_TOKEN: ${{ secrets.AUTOMERGE }}
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: test
+          branch: dev
+          title: "Auto PR: Merge Dev into Test"
+          body: "This PR merges the latest changes from `dev` into `test`."
+          labels: "automated-pr"
