@@ -1,8 +1,8 @@
-name: Merge Test to Master
+name: Merge Test to master
 
 on:
   workflow_run:
-    workflows: ["Feature Testing"]
+    workflows: ["Code Quality Check"]
     types:
       - completed
 
@@ -14,18 +14,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          ref: test
+          fetch-depth: 0
 
       - name: Configure Git
         run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
+          git config user.name "momer99"
+          git config user.email "muhamad01aamir@gmail.com"
 
-      - name: Merge Test into Master
+      - name: Merge Test into master
         run: |
-          git fetch origin
+          git fetch origin master
           git checkout master
-          git merge --no-ff test
+          git pull origin master  # Ensure master is up to date
+          git merge --no-ff origin/test -m "Auto-merging test into master"
           git push origin master
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.AUTOMERGE }}
